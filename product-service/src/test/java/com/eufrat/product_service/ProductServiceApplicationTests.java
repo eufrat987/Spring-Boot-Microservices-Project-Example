@@ -1,7 +1,10 @@
 package com.eufrat.product_service;
 
 import com.eufrat.product_service.dto.ProductRequest;
+import com.eufrat.product_service.dto.ProductResponse;
+import com.eufrat.product_service.model.Product;
 import com.eufrat.product_service.repository.ProductRepository;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -18,6 +21,7 @@ import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -55,11 +59,33 @@ class ProductServiceApplicationTests {
         Assertions.assertEquals(1, productRepository.findAll().size());
     }
 
+    @Test
+    void shouldGetProduct() throws Exception {
+        productRepository.save(getProduct());
+
+        var response = mockMvc.perform(
+                MockMvcRequestBuilders.get("/api/product")
+        ).andExpect(status().isOk())
+                .andReturn().getResponse().getContentAsString();
+
+        var products = objectMapper.readValue(response, new TypeReference<List<ProductResponse>>() {});
+
+        Assertions.assertEquals(1, products.size());
+    }
+
     private ProductRequest getProductRequest() {
         return ProductRequest.builder()
                 .name("iPhone 13")
                 .description("iPhone 13")
                 .price(BigDecimal.valueOf(1200))
+                .build();
+    }
+
+    private Product getProduct() {
+        return Product.builder()
+                .name("Iphone 11")
+                .description("Iphone 11")
+                .price(BigDecimal.valueOf(900))
                 .build();
     }
 
