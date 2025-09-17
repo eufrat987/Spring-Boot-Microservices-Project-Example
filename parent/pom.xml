@@ -15,7 +15,7 @@
     <packaging>pom</packaging>
 
     <properties>
-        <spring-cloud.version>2021.0.2</spring-cloud.version>
+        <spring-cloud.version>2025.0.0</spring-cloud.version>
         <maven.compiler.source>24</maven.compiler.source>
         <maven.compiler.target>24</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
