@@ -4,6 +4,7 @@ import com.eufrat.order_service.dto.OrderRequest;
 import com.eufrat.order_service.service.OrderService;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import io.github.resilience4j.ratelimiter.annotation.RateLimiter;
+import io.github.resilience4j.retry.annotation.Retry;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -21,6 +22,7 @@ public class OrderController {
     @ResponseStatus(HttpStatus.CREATED)
     @CircuitBreaker(name = "inventory", fallbackMethod = "fallback")
     @RateLimiter(name = "inventory")
+    @Retry(name = "inventory")
     public CompletableFuture<String> placeOrder(@RequestBody OrderRequest orderRequest) {
         return CompletableFuture.supplyAsync(() -> orderService.placeOrder(orderRequest));
     }
