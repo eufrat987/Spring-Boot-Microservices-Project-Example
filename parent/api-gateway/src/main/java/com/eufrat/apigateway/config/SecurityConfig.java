@@ -24,10 +24,5 @@ public class SecurityConfig {
         return security.build();
     }
 
-//    @Bean
-//    public ServerHttpSecurity serverHttpSecurity() {
-//        return ServerHttpSecurity.http();
-//    }
-
 }
 
