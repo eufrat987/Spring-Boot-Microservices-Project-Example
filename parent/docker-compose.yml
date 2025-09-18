@@ -29,3 +29,9 @@ services:
       - "8181:8080"
     command: start-dev
 
+  tracing:
+    image: openzipkin/zipkin
+    ports:
+      - "9411:9411"
+
+
