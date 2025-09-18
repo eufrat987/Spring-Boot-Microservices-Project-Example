@@ -3,9 +3,12 @@ package com.eufrat.order_service.controller;
 import com.eufrat.order_service.dto.OrderRequest;
 import com.eufrat.order_service.service.OrderService;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
+import io.github.resilience4j.ratelimiter.annotation.RateLimiter;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.concurrent.CompletableFuture;
 
 @RestController
 @RequestMapping("/api/order")
@@ -17,13 +20,13 @@ public class OrderController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     @CircuitBreaker(name = "inventory", fallbackMethod = "fallback")
-    public String placeOrder(@RequestBody OrderRequest orderRequest) {
-        orderService.placeOrder(orderRequest);
-        return "Order placed successfully";
+    @RateLimiter(name = "inventory")
+    public CompletableFuture<String> placeOrder(@RequestBody OrderRequest orderRequest) {
+        return CompletableFuture.supplyAsync(() -> orderService.placeOrder(orderRequest));
     }
 
-    public String fallback(OrderRequest orderRequest, RuntimeException exception) {
-        return "Oops! Pllease order later.";
+    public CompletableFuture<String> fallback(OrderRequest orderRequest, RuntimeException exception) {
+        return CompletableFuture.supplyAsync(() -> "Oops! Please order later.");
     }
 
 }
