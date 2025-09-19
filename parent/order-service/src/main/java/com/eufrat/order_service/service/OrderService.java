@@ -3,15 +3,16 @@ package com.eufrat.order_service.service;
 import com.eufrat.order_service.dto.InventoryResponse;
 import com.eufrat.order_service.dto.OrderLineItemsDto;
 import com.eufrat.order_service.dto.OrderRequest;
+import com.eufrat.order_service.event.OrderPlacedEvent;
 import com.eufrat.order_service.model.Order;
 import com.eufrat.order_service.model.OrderLineItems;
 import com.eufrat.order_service.repository.OrderRepository;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.reactive.function.client.WebClient;
-import reactor.core.publisher.Mono;
 
 import java.util.Arrays;
 import java.util.List;
@@ -25,6 +26,7 @@ public class OrderService {
 
     private final OrderRepository orderRepository;
     private final WebClient webClient;
+    private final KafkaTemplate<String, OrderPlacedEvent> kafkaTemplate;
 
     public String placeOrder(OrderRequest orderRequest) {
         log.info("Try place order");
@@ -45,6 +47,7 @@ public class OrderService {
 
         if (inStock) {
             orderRepository.save(order);
+            kafkaTemplate.send("notification-topic", new OrderPlacedEvent(order.getOrderNumber()));
             return "Order placed successfully";
         }
 

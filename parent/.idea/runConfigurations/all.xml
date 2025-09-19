@@ -5,6 +5,7 @@
     <runConfiguration name="InventoryServiceApplication" type="Application" />
     <runConfiguration name="OrderServiceApplication" type="Application" />
     <runConfiguration name="ProductServiceApplication" type="Application" />
+    <runConfiguration name="NotificationServiceApplication" type="Application" />
     <method v="2" />
   </configuration>
 </component>
