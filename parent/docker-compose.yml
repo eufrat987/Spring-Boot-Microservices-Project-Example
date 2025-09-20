@@ -1,18 +1,43 @@
+version: "3.0"
 
 services:
 
-  mongodb:
+  api-gateway:
+    build:
+      dockerfile: api-gateway/Dockerfile
+
+  discovery-service:
+    build:
+      dockerfile: discovery-server/Dockerfile
+
+  inventory-service:
+    build:
+      dockerfile: inventory-service/Dockerfile
+
+  notification-service:
+    build:
+      dockerfile: notification-service/Dockerfile
+
+  order-service:
+    build:
+      dockerfile: order-service/Dockerfile
+
+  product-service:
+    build:
+      dockerfile: product-service/Dockerfile
+
+  product-mongodb:
     image: mongo
     ports:
       - "27017:27017"
-  mysql:
+  order-mysql:
     image: mysql
     ports:
       - "3306:3306"
     environment:
       MYSQL_ROOT_PASSWORD: mysql
       MYSQL_DATABASE: order-service
-  mysql2:
+  inventory-mysql:
     image: mysql
     ports:
       - "3307:3306"
@@ -20,7 +45,7 @@ services:
       MYSQL_ROOT_PASSWORD: mysql
       MYSQL_DATABASE: inventory-service
 
-  auth:
+  keycloak-auth:
     image: quay.io/keycloak/keycloak:26.3.4
     environment:
       KC_BOOTSTRAP_ADMIN_USERNAME: admin
@@ -31,7 +56,7 @@ services:
     volumes:
       - keycloak:/opt/keycloak/data/
 
-  tracing:
+  zipkin-tracing:
     image: openzipkin/zipkin
     ports:
       - "9411:9411"

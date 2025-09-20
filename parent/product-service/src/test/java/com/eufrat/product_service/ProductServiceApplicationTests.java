@@ -6,6 +6,7 @@ import com.eufrat.product_service.model.Product;
 import com.eufrat.product_service.repository.ProductRepository;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,6 +42,11 @@ class ProductServiceApplicationTests {
 
     @Autowired
     private ProductRepository productRepository;
+
+    @AfterEach
+    public void cleanDb() {
+        productRepository.deleteAll();
+    }
 
     @DynamicPropertySource
     static void setProperties(DynamicPropertyRegistry dynamicPropertyRegistry) {
