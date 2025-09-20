@@ -4,27 +4,27 @@ services:
 
   api-gateway:
     build:
-      dockerfile: api-gateway/Dockerfile
+      context: api-gateway
 
   discovery-service:
     build:
-      dockerfile: discovery-server/Dockerfile
+      context: discovery-server
 
   inventory-service:
     build:
-      dockerfile: inventory-service/Dockerfile
+      context: inventory-service
 
   notification-service:
     build:
-      dockerfile: notification-service/Dockerfile
+      context: notification-service
 
   order-service:
     build:
-      dockerfile: order-service/Dockerfile
+      context: order-service
 
   product-service:
     build:
-      dockerfile: product-service/Dockerfile
+      context: product-service
 
   product-mongodb:
     image: mongo
@@ -115,16 +115,6 @@ services:
       KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
       KAFKA_CONTROLLER_QUORUM_VOTERS: 1@kafka1:9093,2@kafka2:9094,3@kafka3:9096
       KAFKA_LOG_DIRS: /tmp/kraft-combined-logs
-
-  kafka-ui:
-    image: provectuslabs/kafka-ui
-    container_name: kafka-ui
-    network_mode: host
-    restart: always
-    environment:
-      - KAFKA_CLUSTERS_0_NAME=broker
-      - KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS=localhost:9092
-      - SERVER_PORT=7777
 
 volumes:
   keycloak:

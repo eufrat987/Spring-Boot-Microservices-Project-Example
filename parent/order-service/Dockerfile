@@ -1,20 +1,20 @@
 from eclipse-temurin:24.0.2_12-jre as builder
 
-workdir build
+WORKDIR builder
 
-copy target/*.jar app.jar
+ADD target/*.jar app.jar
 
-run java -Djarmode=layertools -jar app.jar extract
+RUN java -Djarmode=tools -jar app.jar extract --layers --destination extracted
 
 from eclipse-temurin:24.0.2_12-jre
 
-workdir app
+WORKDIR app
 
-copy --from=builder build/dependencies/ ./
-copy --from=builder build/spring-boot-loader/ ./
-copy --from=builder build/snapshot-dependencies/ ./
-copy --from=builder build/application/ ./
+COPY --from=builder builder/extracted/dependencies/ ./
+COPY --from=builder builder/extracted/spring-boot-loader/ ./
+COPY --from=builder builder/extracted/snapshot-dependencies/ ./
+COPY --from=builder builder/extracted/application/ ./
 
-expose 8080
+EXPOSE 8080
 
-entrypoint ["java", "org.springframework.boot.loader.JarLauncher"]
+ENTRYPOINT ["java", "-jar", "app.jar"]
