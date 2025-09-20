@@ -5,40 +5,73 @@ services:
   api-gateway:
     build:
       context: api-gateway
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+    ports:
+      - "8080:8080"
+    depends_on:
+      - discovery-service
 
   discovery-service:
     build:
       context: discovery-server
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+    depends_on:
+      - zipkin-tracing
 
   inventory-service:
     build:
       context: inventory-service
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+    depends_on:
+      - discovery-service
+      - inventory-mysql
+      - api-gateway
 
   notification-service:
     build:
       context: notification-service
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+    depends_on:
+      - discovery-service
+      - api-gateway
 
   order-service:
     build:
       context: order-service
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+    depends_on:
+      - discovery-service
+      - api-gateway
+      - order-mysql
 
   product-service:
     build:
       context: product-service
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+    depends_on:
+      - discovery-service
+      - api-gateway
+      - product-mongodb
 
   product-mongodb:
-    image: mongo
+    image: mongo:8.0.14-rc1-noble
     ports:
       - "27017:27017"
   order-mysql:
-    image: mysql
+    image: mysql:9.4.0-oraclelinux9
     ports:
       - "3306:3306"
     environment:
       MYSQL_ROOT_PASSWORD: mysql
       MYSQL_DATABASE: order-service
   inventory-mysql:
-    image: mysql
+    image: mysql:9.4.0-oraclelinux9
     ports:
       - "3307:3306"
     environment:
@@ -51,19 +84,19 @@ services:
       KC_BOOTSTRAP_ADMIN_USERNAME: admin
       KC_BOOTSTRAP_ADMIN_PASSWORD: admin
     ports:
-      - "8181:8080"
-    command: start-dev
+      - "8181:8181"
+    command: start-dev --http-port=8181
     volumes:
       - keycloak:/opt/keycloak/data/
 
   zipkin-tracing:
-    image: openzipkin/zipkin
+    image: openzipkin/zipkin:3
     ports:
       - "9411:9411"
 
 
   kafka1:
-    image: apache/kafka
+    image: apache/kafka:4.1.0
     container_name: kafka1
     ports:
       - "9092:9092"     # EXTERNAL broker port (Spring Boot access)
@@ -81,7 +114,7 @@ services:
       KAFKA_LOG_DIRS: /tmp/kraft-combined-logs
 
   kafka2:
-    image: apache/kafka
+    image: apache/kafka:4.1.0
     container_name: kafka2
     ports:
       - "9095:9095"     # EXTERNAL broker port (Spring Boot access)
@@ -99,7 +132,7 @@ services:
       KAFKA_LOG_DIRS: /tmp/kraft-combined-logs
 
   kafka3:
-    image: apache/kafka
+    image: apache/kafka:4.1.0
     container_name: kafka3
     ports:
       - "9097:9097"     # EXTERNAL broker port (Spring Boot access)
