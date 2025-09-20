@@ -1,20 +1,35 @@
 package com.eufrat.order_service.config;
 
+import com.eufrat.order_service.client.InventoryClient;
 import io.micrometer.tracing.Span;
 import io.micrometer.tracing.Tracer;
 import io.micrometer.tracing.propagation.Propagator;
 import jakarta.annotation.PostConstruct;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.client.loadbalancer.LoadBalanced;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.reactive.function.client.ClientRequest;
 import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.reactive.function.client.support.WebClientAdapter;
+import org.springframework.web.service.invoker.HttpServiceProxyFactory;
 import reactor.core.publisher.Hooks;
 import reactor.core.publisher.Mono;
 
 @Configuration
 public class WebClientConfig {
+
+    @Value("${rest.inventory.uri}")
+    private String stockUri;
+
+
+    @Bean
+    public InventoryClient inventoryClient(WebClient.Builder webClientBuilder) {
+        var adapter = WebClientAdapter.create(webClientBuilder.baseUrl(stockUri).build());
+        var proxyFactory = HttpServiceProxyFactory.builderFor(adapter).build();
+        return proxyFactory.createClient(InventoryClient.class);
+    }
 
     @Bean
     @LoadBalanced

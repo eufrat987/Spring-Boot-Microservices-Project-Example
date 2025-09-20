@@ -1,5 +1,6 @@
 package com.eufrat.order_service.service;
 
+import com.eufrat.order_service.client.InventoryClient;
 import com.eufrat.order_service.dto.InventoryResponse;
 import com.eufrat.order_service.dto.OrderLineItemsDto;
 import com.eufrat.order_service.dto.OrderRequest;
@@ -12,7 +13,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.Arrays;
 import java.util.List;
@@ -25,8 +25,8 @@ import java.util.UUID;
 public class OrderService {
 
     private final OrderRepository orderRepository;
-    private final WebClient webClient;
     private final KafkaTemplate<String, OrderPlacedEvent> kafkaTemplate;
+    private final InventoryClient inventoryClient;
 
     public String placeOrder(OrderRequest orderRequest) {
         log.info("Try place order");
@@ -38,10 +38,7 @@ public class OrderService {
         // check
         List<String> skuCodes = order.getOrderLineItemsList().stream().map(OrderLineItems::getSkuCode).toList();
 
-        InventoryResponse[] inventoryResponses = webClient.get()
-                .uri("http://inventory-service/api/inventory", uriBuilder ->
-                        uriBuilder.queryParam("skuCode", skuCodes).build())
-                .retrieve().bodyToMono(InventoryResponse[].class).block();
+        InventoryResponse[] inventoryResponses = inventoryClient.isInStock(skuCodes);
 
         boolean inStock = Arrays.stream(inventoryResponses).allMatch(InventoryResponse::isInStock);
 

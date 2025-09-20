@@ -1,11 +1,10 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="all" type="Multirun" separateTabs="false" reuseTabsWithFailures="false" startOneByOne="true" markFailedProcess="true" hideSuccessProcess="false" delayTime="3.0">
     <runConfiguration name="DiscoveryServiceApplication" type="Application" />
-    <runConfiguration name="ApiGatewayApplication" type="Application" />
-    <runConfiguration name="InventoryServiceApplication" type="Application" />
     <runConfiguration name="OrderServiceApplication" type="Application" />
     <runConfiguration name="ProductServiceApplication" type="Application" />
     <runConfiguration name="NotificationServiceApplication" type="Application" />
+    <runConfiguration name="InventoryServiceApplication" type="Application" />
     <method v="2" />
   </configuration>
 </component>
