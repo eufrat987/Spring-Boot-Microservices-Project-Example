@@ -1,0 +1,21 @@
+{
+  "realm" : "spring-microservices-realm",
+  "users" : [ {
+    "id" : "8c261634-4a48-4853-95ef-5a0c88b3c347",
+    "username" : "service-account-spring-cloud-client",
+    "emailVerified" : false,
+    "enabled" : true,
+    "createdTimestamp" : 1758370338680,
+    "totp" : false,
+    "serviceAccountClientId" : "spring-cloud-client",
+    "credentials" : [ ],
+    "disableableCredentialTypes" : [ ],
+    "requiredActions" : [ ],
+    "realmRoles" : [ "default-roles-spring-microservices-realm" ],
+    "clientRoles" : {
+      "spring-cloud-client" : [ "uma_protection" ]
+    },
+    "notBefore" : 0,
+    "groups" : [ ]
+  } ]
+}

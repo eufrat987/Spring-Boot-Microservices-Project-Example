@@ -85,9 +85,10 @@ services:
       KC_BOOTSTRAP_ADMIN_PASSWORD: admin
     ports:
       - "8181:8181"
-    command: start-dev --http-port=8181
+    command: start-dev --http-port=8181 --import-realm
     volumes:
       - keycloak:/opt/keycloak/data/
+      - ./realm:/opt/keycloak/data/import
 
   zipkin-tracing:
     image: openzipkin/zipkin:3
