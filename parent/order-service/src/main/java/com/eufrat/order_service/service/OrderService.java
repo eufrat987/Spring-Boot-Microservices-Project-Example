@@ -32,7 +32,7 @@ public class OrderService {
         log.info("Try place order");
         Order order = new Order();
         order.setOrderNumber(UUID.randomUUID().toString());
-        List<OrderLineItems> orderLineItems = orderRequest.getOrderLineItemsDtos().stream().map(this::mapToDto).toList();
+        List<OrderLineItems> orderLineItems = orderRequest.orderLineItemsDtos().stream().map(this::mapToDto).toList();
         order.setOrderLineItemsList(orderLineItems);
 
         // check
@@ -56,9 +56,9 @@ public class OrderService {
 
     private OrderLineItems mapToDto(OrderLineItemsDto orderLineItemsDto) {
         OrderLineItems orderLineItems = new OrderLineItems();
-        orderLineItems.setPrize(orderLineItemsDto.getPrize());
-        orderLineItems.setQuantity(orderLineItemsDto.getQuantity());
-        orderLineItems.setSkuCode(orderLineItemsDto.getSkuCode());
+        orderLineItems.setPrize(orderLineItemsDto.prize());
+        orderLineItems.setQuantity(orderLineItemsDto.quantity());
+        orderLineItems.setSkuCode(orderLineItemsDto.skuCode());
         return orderLineItems;
     }
 }

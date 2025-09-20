@@ -19,9 +19,9 @@ public class ProductService {
 
     public void createProduct(ProductRequest productRequest) {
         var product = Product.builder()
-                .name(productRequest.getName())
-                .price(productRequest.getPrice())
-                .description(productRequest.getDescription())
+                .name(productRequest.name())
+                .price(productRequest.price())
+                .description(productRequest.description())
                 .build();
 
         productRepository.save(product);
