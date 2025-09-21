@@ -23,7 +23,6 @@ public class WebClientConfig {
     @Value("${rest.inventory.uri}")
     private String stockUri;
 
-
     @Bean
     public InventoryClient inventoryClient(WebClient.Builder webClientBuilder) {
         var adapter = WebClientAdapter.create(webClientBuilder.baseUrl(stockUri).build());
